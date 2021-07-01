@@ -17,7 +17,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     
         $reg_no = mysqli_real_escape_string($con, $_POST['reg_no']);
         $venue = mysqli_real_escape_string($con, $_POST['venue']);
-        $timetable_id = mysqli_real_escape_string($con, $_POST['timetable_id']);
         $imeis = mysqli_real_escape_string($con, $_POST['imeis']);
 
         $current_year = date('Y');
@@ -66,6 +65,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $subject_name = "";
                         $programmes_list = [];
                         $student_programe = "";
+						$is_present = false;
 
                         $prog_subj_sql = "SELECT code FROM subjects WHERE id = $subject_id";
                         $prog_subj_res = mysqli_query($con, $prog_subj_sql);
@@ -101,6 +101,22 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                                 $student_programe = $student_prog_row['code'];
                             }
                         }
+						
+						// Check if the student is present..
+						if(in_array($student_programe, $programmes_list)){
+							$is_present_sql = "SELECT * FROM attendance WHERE timetable_id = '" . $timetable_id . "'
+								AND imei = '" . $imeis . "'
+								AND student_id = (SELECT id FROM users WHERE reg_no = '" . $reg_no . "')";
+							$is_present_res = mysqli_query($con, $is_present_sql);
+							
+							if(!mysqli_error($con)){
+								if(mysqli_num_rows($is_present_res) == 1){
+									$is_present = true;
+								}else{
+									$is_present = false;
+								}
+							}
+						}
 
                         $response['status'] = 'Ok';
                         $response['message'] = 'A session exists at this venue!';
@@ -112,7 +128,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                             'venue'=>$venue,
                             'programmes'=>$programmes_list,
                             'is_belong'=> in_array($student_programe, $programmes_list),
-                            'is_present'=> false
+							'is_present'=>$is_present,
                         ];
                     }else { // Else, no session exists at this venue at this time..
 

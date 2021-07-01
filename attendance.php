@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             WHERE date = '" . $current_date . "' 
             AND imei = '" . $imeis . "'
             AND timetable_id = '" . $timetable_id . "' 
-            AND student_id = ( SELECT id FROM users WHERE regno = '" . $reg_no . "')";
+            AND student_id = ( SELECT id FROM users WHERE reg_no = '" . $reg_no . "')";
         
         $present_check_res = mysqli_query($con, $present_check_sql);
 
@@ -38,8 +38,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             }else{
 
                 $present_sql = "INSERT INTO attendance 
-                    (timetable_id, student_id, 'imei', status, date) 
-                    VALUES ($timetable_id, $user_id, 'PRESENT', curdate())";
+                    (timetable_id, student_id, imei, status, date) 
+                    VALUES ('".$timetable_id."', (SELECT id FROM users WHERE reg_no = '".$reg_no."'), '".$imeis."', 'PRESENT', curdate())";
                 
                 $present_res = mysqli_query($con, $present_sql);
 
