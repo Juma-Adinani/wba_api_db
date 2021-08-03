@@ -8,6 +8,8 @@
  */
 include_once 'config/connect.php';
 
+date_default_timezone_set('Africa/Nairobi');
+
 $response = [];
 
 // echo $_SERVER['REQUEST_METHOD'];

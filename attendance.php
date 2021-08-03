@@ -1,6 +1,6 @@
 <?php
 include_once 'config/connect.php';
-
+date_default_timezone_set('Africa/Nairobi');
 $response = [];
 
 // echo $_SERVER['REQUEST_METHOD'];
@@ -47,7 +47,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     $response['status'] = 'Error';
                     $response['message'] = 'Sorry!, An error has occured.' . mysqli_error($con);
                 }else{
-                    $response['status'] = 'Error';
+                    $response['status'] = 'Ok';
                     $response['message'] = 'You are PRESENT for this session.';
                 }
 
